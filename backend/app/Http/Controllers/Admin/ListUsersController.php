@@ -2,25 +2,30 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Handlers\Admin\ListUsersHandler;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Http\Requests\Admin\ListUsersRequest;
 use App\Http\Resources\UserResource;
-use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ListUsersController extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(ListUsersRequest $request): AnonymousResourceCollection
+    public function __invoke(ListUsersRequest $request, ListUsersHandler $handler): AnonymousResourceCollection|JsonResponse
     {
-        $users = User::query()
-            ->with('roles.permissions')
-            ->when($request->validated('role'), fn ($query, $role) => $query->role($role))
-            ->orderBy('name')
-            ->paginate($request->validated('per_page', 15));
+        try {
+            $users = $handler->handle(
+                $request->validated('role'),
+                (int) $request->validated('per_page', 15),
+            );
+        } catch (\Exception $e) {
+            report($e);
+
+            return response()->json([
+                'message' => 'Failed to retrieve users.',
+                'error' => config('app.debug') ? $e->getMessage() : null,
+            ], 500);
+        }
 
         return UserResource::collection($users);
     }
