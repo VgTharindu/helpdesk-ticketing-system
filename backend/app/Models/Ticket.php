@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
-
+use App\Enums\PermissionName;
+use Illuminate\Database\Eloquent\Builder;
 class Ticket extends Model
 {
     use LogsActivity;
@@ -54,5 +55,20 @@ class Ticket extends Model
     public function assignments(): HasMany
     {
         return $this->hasMany(AgentTicket::class);
+    }
+
+    public function scopeVisibleTo(Builder $query, User $user): Builder
+    {
+        if ($user->can(PermissionName::ViewAllTickets->value)) {          // admin
+            return $query;
+        }
+
+        if ($user->can(PermissionName::ViewTicketQueue->value)) {         // agent
+            return $query->where(function (Builder $q) use ($user) {
+                $q->whereNull('agent_id')->orWhere('agent_id', $user->id);
+            });
+        }
+
+        return $query->where('customer_id', $user->id);                   // customer
     }
 }
