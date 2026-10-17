@@ -17,6 +17,7 @@ use App\Http\Controllers\Ticket\ClaimTicketController;
 use App\Http\Controllers\Ticket\CreateReplyController;
 use App\Http\Controllers\Ticket\ListRepliesController;
 use App\Http\Controllers\Ticket\UpdateTicketStatusController;
+use App\Http\Controllers\Dashboard\ShowDashboardController;
 
 Route::post('/register', RegisterController::class);
 Route::post('/login', LoginController::class)->middleware('throttle:10,1');
@@ -24,6 +25,11 @@ Route::post('/login', LoginController::class)->middleware('throttle:10,1');
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', LogoutController::class);
     Route::get('/me', MeController::class);
+        Route::get('/dashboard', ShowDashboardController::class)->middleware('permission:'.implode('|', [
+        PermissionName::ViewOwnTickets->value,
+        PermissionName::ViewTicketQueue->value,
+        PermissionName::ViewAllTickets->value,
+    ]));
     Route::prefix('tickets')->group(function () {
         Route::post('/', CreateTicketController::class)
             ->middleware('permission:'.PermissionName::CreateTickets->value);
