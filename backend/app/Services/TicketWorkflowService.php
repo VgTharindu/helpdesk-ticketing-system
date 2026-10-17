@@ -27,6 +27,8 @@ class TicketWorkflowService
         return in_array($to, $this->allowedTransitions($from), true);
     }
 
+    // ---------- 5B: claim / assign ----------
+
     public function assertClaimable(Ticket $ticket): void
     {
         if ($ticket->agent_id !== null) {
@@ -76,6 +78,52 @@ class TicketWorkflowService
         $ticket->agent_id = $agent->id;
         $ticket->status = $this->statusAfterAssignment($ticket);
         $ticket->save();
+
+        return $ticket;
+    }
+
+    // ---------- 5C: status change / replies ----------
+
+    public function assertCanChangeStatus(Ticket $ticket, TicketStatus $to): void
+    {
+        if ($ticket->status === TicketStatus::Open) {
+            throw new TicketConflictException('Claim or assign the ticket before changing its status.');
+        }
+
+        if ($ticket->status === $to) {
+            throw new TicketConflictException('The ticket is already in that status.');
+        }
+
+        if (! $this->canTransition($ticket->status, $to)) {
+            throw new TicketConflictException(
+                "A ticket cannot move from {$ticket->status->value} to {$to->value}."
+            );
+        }
+    }
+
+    public function changeStatus(Ticket $ticket, TicketStatus $to): Ticket
+    {
+        $ticket->status = $to;
+        $ticket->save();
+
+        return $ticket;
+    }
+
+    public function assertCanReply(Ticket $ticket): void
+    {
+        if ($ticket->status === TicketStatus::Resolved) {
+            throw new TicketConflictException('This ticket is resolved, so new replies are not allowed.');
+        }
+    }
+
+    public function applyCustomerReply(Ticket $ticket): Ticket
+    {
+        if ($ticket->status === TicketStatus::WaitingForCustomer) {
+            $ticket->status = TicketStatus::InProgress;
+            $ticket->save();
+        } else {
+            $ticket->touch();
+        }
 
         return $ticket;
     }
