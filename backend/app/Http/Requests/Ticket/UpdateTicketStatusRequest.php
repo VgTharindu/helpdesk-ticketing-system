@@ -4,6 +4,8 @@ namespace App\Http\Requests\Ticket;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use App\Enums\TicketStatus;
+use Illuminate\Validation\Rule;
 
 class UpdateTicketStatusRequest extends FormRequest
 {
@@ -23,7 +25,7 @@ class UpdateTicketStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'status' => ['required', Rule::enum(TicketStatus::class)->except([TicketStatus::Open])],
         ];
     }
 }

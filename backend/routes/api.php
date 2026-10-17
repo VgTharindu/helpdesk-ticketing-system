@@ -14,6 +14,9 @@ use App\Http\Controllers\Ticket\ListTicketsController;
 use App\Http\Controllers\Ticket\ShowTicketController;
 use App\Http\Controllers\Ticket\AssignTicketController;
 use App\Http\Controllers\Ticket\ClaimTicketController;
+use App\Http\Controllers\Ticket\CreateReplyController;
+use App\Http\Controllers\Ticket\ListRepliesController;
+use App\Http\Controllers\Ticket\UpdateTicketStatusController;
 
 Route::post('/register', RegisterController::class);
 Route::post('/login', LoginController::class)->middleware('throttle:10,1');
@@ -21,7 +24,7 @@ Route::post('/login', LoginController::class)->middleware('throttle:10,1');
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', LogoutController::class);
     Route::get('/me', MeController::class);
-        Route::prefix('tickets')->group(function () {
+    Route::prefix('tickets')->group(function () {
         Route::post('/', CreateTicketController::class)
             ->middleware('permission:'.PermissionName::CreateTickets->value);
 
@@ -32,13 +35,24 @@ Route::middleware('auth:sanctum')->group(function () {
         ]))->group(function () {
             Route::get('/', ListTicketsController::class);
             Route::get('/{ticket}', ShowTicketController::class)->middleware('can:view,ticket');
+            Route::get('/{ticket}/replies', ListRepliesController::class)->middleware('can:view,ticket');
         });
 
-            Route::post('/{ticket}/claim', ClaimTicketController::class)
-            ->middleware('permission:'.PermissionName::ClaimTickets->value);
+        Route::post('/{ticket}/claim', ClaimTicketController::class)
+        ->middleware('permission:'.PermissionName::ClaimTickets->value);
 
-            Route::post('/{ticket}/assign', AssignTicketController::class)
-            ->middleware('permission:'.PermissionName::AssignTickets->value);
+        Route::post('/{ticket}/assign', AssignTicketController::class)
+        ->middleware('permission:'.PermissionName::AssignTickets->value);
+
+        Route::post('/{ticket}/replies', CreateReplyController::class)->middleware([
+            'permission:'.PermissionName::ReplyToTickets->value,
+            'can:reply,ticket',
+        ]);
+
+        Route::patch('/{ticket}/status', UpdateTicketStatusController::class)->middleware([
+            'permission:'.PermissionName::ChangeTicketStatus->value,
+            'can:changeStatus,ticket',
+        ]);
     });
 
     Route::middleware('permission:'.PermissionName::ManageUsers->value)
