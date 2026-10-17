@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Ticket\CreateTicketController;
 use App\Http\Controllers\Ticket\ListTicketsController;
 use App\Http\Controllers\Ticket\ShowTicketController;
+use App\Http\Controllers\Ticket\AssignTicketController;
+use App\Http\Controllers\Ticket\ClaimTicketController;
 
 Route::post('/register', RegisterController::class);
 Route::post('/login', LoginController::class)->middleware('throttle:10,1');
@@ -31,6 +33,12 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/', ListTicketsController::class);
             Route::get('/{ticket}', ShowTicketController::class)->middleware('can:view,ticket');
         });
+
+            Route::post('/{ticket}/claim', ClaimTicketController::class)
+            ->middleware('permission:'.PermissionName::ClaimTickets->value);
+
+            Route::post('/{ticket}/assign', AssignTicketController::class)
+            ->middleware('permission:'.PermissionName::AssignTickets->value);
     });
 
     Route::middleware('permission:'.PermissionName::ManageUsers->value)
