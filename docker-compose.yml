@@ -1,17 +1,25 @@
-services:                           
-  mysql:                            
-    image: mysql:8.0 
-    restart: unless-stopped               
-    container_name: helpdesk-mysql  
-    environment:                    
-      MYSQL_DATABASE: helpdesk      
-      MYSQL_USER: helpdesk          
-      MYSQL_PASSWORD: secret        
-      MYSQL_ROOT_PASSWORD: rootsecret   
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: helpdesk-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: helpdesk
+      MYSQL_USER: helpdesk
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: rootsecret
     ports:
-      - "3306:3306"                 
+      - "13306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql   
+      - mysql_data:/var/lib/mysql
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: helpdesk-mailpit
+    restart: unless-stopped
+    ports:
+      - "11025:1025"
+      - "8025:8025"
 
 volumes:
-  mysql_data:                      
+  mysql_data:

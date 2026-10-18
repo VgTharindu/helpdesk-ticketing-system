@@ -4,18 +4,21 @@ namespace App\Handlers\Ticket;
 
 use App\Enums\TicketStatus;
 use App\Models\Ticket;
+use App\Services\TicketNotificationService;
 use App\Services\TicketWorkflowService;
 use Illuminate\Support\Facades\DB;
 
 class UpdateTicketStatusHandler
 {
-    public function __construct(private readonly TicketWorkflowService $workflow)
-    {
+    public function __construct(
+        private readonly TicketWorkflowService $workflow,
+        private readonly TicketNotificationService $notifications,
+    ) {
     }
 
     public function handle(Ticket $ticket, TicketStatus $status): Ticket
     {
-        return DB::transaction(function () use ($ticket, $status) {
+        $updated = DB::transaction(function () use ($ticket, $status) {
             $locked = Ticket::query()
                 ->whereKey($ticket->getKey())
                 ->lockForUpdate()
@@ -26,5 +29,11 @@ class UpdateTicketStatusHandler
 
             return $locked->load(['customer', 'agent']);
         });
+
+        if ($status === TicketStatus::Resolved) {
+            $this->notifications->ticketResolved($updated);
+        }
+
+        return $updated;
     }
 }
