@@ -13,6 +13,8 @@ use App\Models\Ticket;
 use App\Models\TicketReply;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\TicketReminderAgentMail;
+use App\Mail\TicketReminderCustomerMail;
 
 class TicketNotificationService
 {
@@ -49,5 +51,15 @@ class TicketNotificationService
     public function ticketResolved(Ticket $ticket): void
     {
         Mail::to($ticket->customer)->send(new TicketResolvedMail($ticket));
+    }
+
+        public function reminderForAgent(Ticket $ticket): void
+    {
+        Mail::to($ticket->agent)->send(new TicketReminderAgentMail($ticket));
+    }
+
+    public function reminderForCustomer(Ticket $ticket): void
+    {
+        Mail::to($ticket->customer)->send(new TicketReminderCustomerMail($ticket));
     }
 }
