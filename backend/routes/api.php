@@ -18,6 +18,8 @@ use App\Http\Controllers\Ticket\CreateReplyController;
 use App\Http\Controllers\Ticket\ListRepliesController;
 use App\Http\Controllers\Ticket\UpdateTicketStatusController;
 use App\Http\Controllers\Dashboard\ShowDashboardController;
+use App\Http\Controllers\Ticket\ListTicketAssignmentsController;
+use App\Http\Controllers\Ticket\ListTicketHistoryController;
 
 Route::post('/register', RegisterController::class);
 Route::post('/login', LoginController::class)->middleware('throttle:10,1');
@@ -42,6 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/', ListTicketsController::class);
             Route::get('/{ticket}', ShowTicketController::class)->middleware('can:view,ticket');
             Route::get('/{ticket}/replies', ListRepliesController::class)->middleware('can:view,ticket');
+            Route::get('/{ticket}/history', ListTicketHistoryController::class)->middleware('can:view,ticket');
         });
 
         Route::post('/{ticket}/claim', ClaimTicketController::class)
@@ -58,6 +61,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/{ticket}/status', UpdateTicketStatusController::class)->middleware([
             'permission:'.PermissionName::ChangeTicketStatus->value,
             'can:changeStatus,ticket',
+        ]);
+
+        Route::get('/{ticket}/assignments', ListTicketAssignmentsController::class)->middleware([
+            'permission:'.implode('|', [
+                PermissionName::ViewTicketQueue->value,
+                PermissionName::ViewAllTickets->value,
+            ]),
+            'can:view,ticket',
         ]);
     });
 

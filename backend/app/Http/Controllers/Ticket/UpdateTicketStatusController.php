@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Ticket\UpdateTicketStatusRequest;
 use App\Http\Resources\TicketResource;
 use App\Models\Ticket;
+use Illuminate\Http\JsonResponse;
 
 class UpdateTicketStatusController extends Controller
 {
@@ -15,9 +16,12 @@ class UpdateTicketStatusController extends Controller
         UpdateTicketStatusRequest $request,
         Ticket $ticket,
         UpdateTicketStatusHandler $handler,
-    ): TicketResource {
+    ): JsonResponse {
         $updated = $handler->handle($ticket, TicketStatus::from($request->validated('status')));
 
-        return new TicketResource($updated);
+        return response()->json([
+            'message' => 'Ticket status updated successfully.',
+            'data' => new TicketResource($updated),
+        ]);
     }
 }
