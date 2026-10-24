@@ -1,12 +1,21 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Moon, Sun } from 'lucide-react';
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
-  const [mounted] = useState(() => typeof window !== 'undefined');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // Mount-detection for hydration-safe rendering: next-themes' recommended
+    // workaround. This effect only runs after hydration completes, so the
+    // server render and the client's first (hydration) render both produce
+    // the same placeholder <div>; the real button appears only afterwards.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
 
   if (!mounted) {
     return <div className="h-9 w-9" />;
