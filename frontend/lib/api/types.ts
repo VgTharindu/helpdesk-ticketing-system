@@ -79,3 +79,14 @@ export interface ApiMessageResponse<T> {
 export interface ApiDataResponse<T> {
   data: T;
 }
+
+export interface Assignment {
+  id: number;
+  type: "claim" | "assigned" | "reassigned";
+  agent: { id: number; name: string };
+  assigned_by: { id: number; name: string } | null;
+  reason: string | null;
+  assigned_at: string;
+  unassigned_at: string | null;
+  is_current: boolean;
+}
