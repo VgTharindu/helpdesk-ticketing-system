@@ -1,17 +1,18 @@
 'use client';
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui";
 import type { PaginationMeta } from "@/lib/api/types";
 
 export function Pagination({ meta }: { meta: PaginationMeta }) {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   function goToPage(page: number) {
     const params = new URLSearchParams(searchParams.toString());
     params.set("page", String(page));
-    router.replace(`/tickets?${params.toString()}`);
+    router.replace(`${pathname}?${params.toString()}`);
   }
 
   if (meta.last_page <= 1) {
