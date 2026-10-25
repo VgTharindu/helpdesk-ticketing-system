@@ -78,7 +78,9 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
       {tab === "conversation" && (
         <Card className="flex flex-col gap-4">
           {repliesQuery.isLoading && <Skeleton className="h-24" />}
-          {repliesQuery.isError && <ErrorState message="Couldn't load the conversation." />}
+          {repliesQuery.isError && (
+            <ErrorState message="Couldn't load the conversation." onRetry={() => repliesQuery.refetch()} />
+          )}
           {repliesQuery.data && <ConversationThread replies={repliesQuery.data.data} />}
           {ticket.status !== "resolved" ? (
             <ReplyForm ticketId={ticket.id} />
@@ -91,7 +93,9 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
       {tab === "history" && (
         <Card>
           {historyQuery.isLoading && <Skeleton className="h-24" />}
-          {historyQuery.isError && <ErrorState message="Couldn't load the history." />}
+          {historyQuery.isError && (
+            <ErrorState message="Couldn't load the history." onRetry={() => historyQuery.refetch()} />
+          )}
           {historyQuery.data && <HistoryTimeline items={historyQuery.data.data} />}
         </Card>
       )}
@@ -99,7 +103,9 @@ export default function TicketDetailPage({ params }: { params: Promise<{ id: str
       {tab === "assignments" && canSeeAssignments && (
         <Card>
           {assignmentsQuery.isLoading && <Skeleton className="h-24" />}
-          {assignmentsQuery.isError && <ErrorState message="Couldn't load assignments." />}
+          {assignmentsQuery.isError && (
+            <ErrorState message="Couldn't load assignments." onRetry={() => assignmentsQuery.refetch()} />
+          )}
           {assignmentsQuery.data && <AssignmentsTable assignments={assignmentsQuery.data.data} />}
         </Card>
       )}
