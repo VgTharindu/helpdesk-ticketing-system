@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api/client";
-import type { Paginated, Ticket } from "@/lib/api/types";
+import type { ApiMessageResponse, Paginated, Ticket } from "@/lib/api/types";
 
 export interface TicketListParams {
   "filter[status]"?: string;
@@ -12,6 +12,16 @@ export interface TicketListParams {
   [key: string]: string | number | boolean | undefined;
 }
 
+export interface CreateTicketPayload {
+  subject: string;
+  description: string;
+  priority: "low" | "medium" | "high";
+}
+
 export function listTickets(params: TicketListParams) {
   return apiClient<Paginated<Ticket>>("/tickets", { params });
+}
+
+export function createTicket(payload: CreateTicketPayload) {
+  return apiClient<ApiMessageResponse<Ticket>>("/tickets", { method: "POST", body: payload });
 }
