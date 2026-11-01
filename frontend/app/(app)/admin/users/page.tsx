@@ -12,7 +12,7 @@ import { Button, Select, Skeleton, Spinner } from "@/components/ui";
 
 const ROLE_FILTER_OPTIONS = [
   { value: "", label: "All roles" },
-  { value: "customer", label: "Customers" },
+  { value: "customer", label: "Customers" },  
   { value: "agent", label: "Agents" },
   { value: "admin", label: "Admins" },
 ];
