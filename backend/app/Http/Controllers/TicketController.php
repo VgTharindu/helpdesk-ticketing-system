@@ -7,6 +7,7 @@ use App\Handlers\Ticket\AssignTicketHandler;
 use App\Handlers\Ticket\ClaimTicketHandler;
 use App\Handlers\Ticket\CreateReplyHandler;
 use App\Handlers\Ticket\CreateTicketHandler;
+use App\Handlers\Ticket\DownloadAttachmentHandler;
 use App\Handlers\Ticket\ListRepliesHandler;
 use App\Handlers\Ticket\ListTicketAssignmentsHandler;
 use App\Handlers\Ticket\ListTicketHistoryHandler;
@@ -23,25 +24,18 @@ use App\Http\Resources\TicketAssignmentResource;
 use App\Http\Resources\TicketReplyResource;
 use App\Http\Resources\TicketResource;
 use App\Models\Ticket;
+use App\Models\TicketAttachment;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
-/**
- * Ticket endpoints.
- *
- * Controllers only connect the request to a handler and return a resource.
- * All business logic lives in app/Handlers/Ticket and app/Services.
- */
+// Ticket endpoints: controllers only connect the request to a handler; business logic lives in Handlers and Services
 class TicketController extends Controller
 {
-    // =====================================================================
     // List & Show
-    // =====================================================================
 
-    /**
-     * GET /api/tickets
-     */
+    // GET /api/tickets
     public function index(ListTicketsRequest $request, ListTicketsHandler $handler): AnonymousResourceCollection
     {
         $tickets = $handler->handle(
@@ -53,21 +47,15 @@ class TicketController extends Controller
         return TicketResource::collection($tickets);
     }
 
-    /**
-     * GET /api/tickets/{ticket}
-     */
+    // GET /api/tickets/{ticket}
     public function show(Ticket $ticket, ShowTicketHandler $handler): TicketResource
     {
         return new TicketResource($handler->handle($ticket));
     }
 
-    // =====================================================================
     // Create
-    // =====================================================================
 
-    /**
-     * POST /api/tickets
-     */
+    // POST /api/tickets
     public function store(StoreTicketRequest $request, CreateTicketHandler $handler): JsonResponse
     {
         $ticket = $handler->handle($request->user(), $request->validated());
@@ -78,13 +66,20 @@ class TicketController extends Controller
         ], 201);
     }
 
-    // =====================================================================
-    // Assignment actions (claim / assign)
-    // =====================================================================
+    // Attachments
 
-    /**
-     * POST /api/tickets/{ticket}/claim
-     */
+    // GET /api/tickets/{ticket}/attachments/{attachment}
+    public function downloadAttachment(
+        Ticket $ticket,
+        TicketAttachment $attachment,
+        DownloadAttachmentHandler $handler,
+    ): StreamedResponse {
+        return $handler->handle($attachment);
+    }
+
+    // Assignment actions (claim / assign)
+
+    // POST /api/tickets/{ticket}/claim
     public function claim(Request $request, Ticket $ticket, ClaimTicketHandler $handler): JsonResponse
     {
         $claimed = $handler->handle($ticket, $request->user());
@@ -95,9 +90,7 @@ class TicketController extends Controller
         ]);
     }
 
-    /**
-     * POST /api/tickets/{ticket}/assign
-     */
+    // POST /api/tickets/{ticket}/assign
     public function assign(AssignTicketRequest $request, Ticket $ticket, AssignTicketHandler $handler): JsonResponse
     {
         $assigned = $handler->handle(
@@ -113,21 +106,15 @@ class TicketController extends Controller
         ]);
     }
 
-    /**
-     * GET /api/tickets/{ticket}/assignments
-     */
+    // GET /api/tickets/{ticket}/assignments
     public function assignments(Ticket $ticket, ListTicketAssignmentsHandler $handler): AnonymousResourceCollection
     {
         return TicketAssignmentResource::collection($handler->handle($ticket));
     }
 
-    // =====================================================================
     // Status
-    // =====================================================================
 
-    /**
-     * PATCH /api/tickets/{ticket}/status
-     */
+    // PATCH /api/tickets/{ticket}/status
     public function updateStatus(
         UpdateTicketStatusRequest $request,
         Ticket $ticket,
@@ -141,29 +128,21 @@ class TicketController extends Controller
         ]);
     }
 
-    /**
-     * GET /api/tickets/{ticket}/history
-     */
+    // GET /api/tickets/{ticket}/history
     public function history(Ticket $ticket, ListTicketHistoryHandler $handler): AnonymousResourceCollection
     {
         return ActivityResource::collection($handler->handle($ticket));
     }
 
-    // =====================================================================
     // Replies (conversation)
-    // =====================================================================
 
-    /**
-     * GET /api/tickets/{ticket}/replies
-     */
+    // GET /api/tickets/{ticket}/replies
     public function replies(Ticket $ticket, ListRepliesHandler $handler): AnonymousResourceCollection
     {
         return TicketReplyResource::collection($handler->handle($ticket));
     }
 
-    /**
-     * POST /api/tickets/{ticket}/replies
-     */
+    // POST /api/tickets/{ticket}/replies
     public function storeReply(StoreReplyRequest $request, Ticket $ticket, CreateReplyHandler $handler): JsonResponse
     {
         $reply = $handler->handle($ticket, $request->user(), $request->validated('message'));

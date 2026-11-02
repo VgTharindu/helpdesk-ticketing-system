@@ -56,6 +56,9 @@ Route::middleware('auth:sanctum')->group(function () use ($canViewTickets, $canV
                     Route::get('/{ticket}', 'show');
                     Route::get('/{ticket}/replies', 'replies');
                     Route::get('/{ticket}/history', 'history');
+
+                    // Attachment must belong to this ticket (scoped binding)
+                    Route::get('/{ticket}/attachments/{attachment}', 'downloadAttachment')->scopeBindings();
                 });
             });
 
