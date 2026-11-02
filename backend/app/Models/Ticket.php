@@ -57,6 +57,11 @@ class Ticket extends Model
         return $this->hasMany(AgentTicket::class);
     }
 
+    public function attachments(): HasMany
+    {
+        return $this->hasMany(TicketAttachment::class);
+    }
+
     public function scopeVisibleTo(Builder $query, User $user): Builder
     {
         if ($user->can(PermissionName::ViewAllTickets->value)) {          // admin
