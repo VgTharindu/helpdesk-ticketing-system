@@ -13,8 +13,8 @@ class ActivityResource extends JsonResource
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
-{
-    return [
+    {
+        return [
             'id' => $this->id,
             'event' => $this->event,
             'ticket' => [

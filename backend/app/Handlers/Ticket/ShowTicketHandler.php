@@ -8,6 +8,6 @@ class ShowTicketHandler
 {
     public function handle(Ticket $ticket): Ticket
     {
-        return $ticket->load(['customer', 'agent']);
+        return $ticket->load(['customer', 'agent', 'attachments']);
     }
 }

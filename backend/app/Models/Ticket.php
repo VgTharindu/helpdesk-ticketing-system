@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
+use App\Enums\PermissionName;
 use App\Enums\TicketPriority;
 use App\Enums\TicketStatus;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
-use App\Enums\PermissionName;
-use Illuminate\Database\Eloquent\Builder;
+
 class Ticket extends Model
 {
     use LogsActivity;

@@ -26,10 +26,13 @@ function buildPath(path: string, params?: QueryParams): string {
 export async function apiClient<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const { method = "GET", body, params } = options;
 
+  // FormData (file uploads) is sent as-is so the browser sets the multipart boundary
+  const isFormData = body instanceof FormData;
+
   const response = await fetch(buildPath(path, params), {
     method,
-    headers: { "Content-Type": "application/json" },
-    body: body ? JSON.stringify(body) : undefined,
+    headers: isFormData ? undefined : { "Content-Type": "application/json" },
+    body: isFormData ? body : body ? JSON.stringify(body) : undefined,
   });
 
   if (response.status === 204) {

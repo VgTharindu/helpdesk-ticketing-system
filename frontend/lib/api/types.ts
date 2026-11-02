@@ -11,6 +11,15 @@ export interface User {
   created_at: string;
 }
 
+export interface TicketAttachment {
+  id: number;
+  name: string;
+  mime_type: string;
+  size: number;
+  download_path: string;
+  created_at: string;
+}
+
 export interface Ticket {
   id: number;
   subject: string;
@@ -19,6 +28,8 @@ export interface Ticket {
   status: TicketStatus;
   customer: { id: number; name: string } | null;
   agent: { id: number; name: string } | null;
+  // Only present on show/create responses (not on the list)
+  attachments?: TicketAttachment[];
   created_at: string;
   updated_at: string;
 }

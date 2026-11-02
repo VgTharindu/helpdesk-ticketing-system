@@ -15,9 +15,7 @@ class NewTicketForSupportMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public Ticket $ticket, public User $agent)
-    {
-    }
+    public function __construct(public Ticket $ticket, public User $agent) {}
 
     public function envelope(): Envelope
     {

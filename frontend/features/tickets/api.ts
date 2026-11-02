@@ -24,6 +24,7 @@ export interface CreateTicketPayload {
   subject: string;
   description: string;
   priority: "low" | "medium" | "high";
+  attachments?: File[];
 }
 
 export interface AssignTicketPayload {
@@ -36,7 +37,18 @@ export function listTickets(params: TicketListParams) {
 }
 
 export function createTicket(payload: CreateTicketPayload) {
-  return apiClient<ApiMessageResponse<Ticket>>("/tickets", { method: "POST", body: payload });
+  // Multipart form so files can be sent together with the text fields
+  const formData = new FormData();
+  formData.append("subject", payload.subject);
+  formData.append("description", payload.description);
+  formData.append("priority", payload.priority);
+  payload.attachments?.forEach((file) => formData.append("attachments[]", file));
+
+  return apiClient<ApiMessageResponse<Ticket>>("/tickets", { method: "POST", body: formData });
+}
+
+export function attachmentDownloadUrl(downloadPath: string) {
+  return `/api/proxy${downloadPath}`;
 }
 
 export function getTicket(id: number) {

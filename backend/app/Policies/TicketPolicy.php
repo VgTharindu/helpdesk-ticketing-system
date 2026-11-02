@@ -16,7 +16,7 @@ class TicketPolicy
             ->exists();
     }
 
-      public function reply(User $user, Ticket $ticket): bool
+    public function reply(User $user, Ticket $ticket): bool
     {
         if ($user->can(PermissionName::ClaimTickets->value)) {
             return $ticket->agent_id === $user->id;

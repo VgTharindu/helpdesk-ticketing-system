@@ -12,7 +12,7 @@ class TicketResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-   public function toArray(Request $request): array
+    public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,
@@ -28,6 +28,7 @@ class TicketResource extends JsonResource
                 'id' => $this->agent->id,
                 'name' => $this->agent->name,
             ]),
+            'attachments' => TicketAttachmentResource::collection($this->whenLoaded('attachments')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests\Ticket;
 
-use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Foundation\Http\FormRequest;
 use App\Enums\UserRole;
 use App\Models\User;
 use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Foundation\Http\FormRequest;
 
 class AssignTicketRequest extends FormRequest
 {

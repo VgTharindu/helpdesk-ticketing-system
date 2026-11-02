@@ -14,8 +14,7 @@ class AssignTicketHandler
     public function __construct(
         private readonly TicketWorkflowService $workflow,
         private readonly TicketNotificationService $notifications,
-    ) {
-    }
+    ) {}
 
     public function handle(Ticket $ticket, int $agentId, User $admin, ?string $reason = null): Ticket
     {

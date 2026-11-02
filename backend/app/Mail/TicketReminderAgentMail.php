@@ -14,9 +14,7 @@ class TicketReminderAgentMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public Ticket $ticket)
-    {
-    }
+    public function __construct(public Ticket $ticket) {}
 
     public function envelope(): Envelope
     {
