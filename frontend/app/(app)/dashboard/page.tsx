@@ -1,10 +1,9 @@
 'use client';
 
-import { useDashboard } from "@/features/dashboard/hooks";
-import { StatCards } from "@/features/dashboard/components/StatCards";
-import { RecentActivity } from "@/features/dashboard/components/RecentActivity";
-import { Skeleton } from "@/components/ui";
-import { ErrorState } from "@/components/shared/ErrorState";
+import { useDashboard } from "@/services/dashboard";
+import { StatCards } from "@/components/dashboard/StatCards";
+import { RecentActivity } from "@/components/dashboard/RecentActivity";
+import { Skeleton, ErrorState } from "@/components/ui";
 
 export default function DashboardPage() {
   const { data, isLoading, isError, refetch } = useDashboard();

@@ -4,11 +4,10 @@ import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
-import { createTicketSchema, type CreateTicketFormValues } from "@/features/tickets/schemas";
-import { useCreateTicket } from "@/features/tickets/hooks";
-import { AttachmentPicker } from "@/features/tickets/components/AttachmentPicker";
+import { createTicketSchema, type CreateTicketFormValues, useCreateTicket } from "@/services/tickets";
+import { AttachmentPicker } from "@/components/tickets/AttachmentPicker";
 import { Button, Input, Textarea, Select, Card } from "@/components/ui";
-import { ApiError } from "@/lib/api/errors";
+import { ApiError } from "@/lib/api-client";
 
 const PRIORITY_OPTIONS = [
   { value: "low", label: "Low" },

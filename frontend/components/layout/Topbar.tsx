@@ -1,8 +1,8 @@
 'use client';
 
 import { LogOut } from "lucide-react";
-import { useAuthStore } from "@/stores/auth-store";
-import { useLogout } from "@/features/auth/hooks";
+import { useAuthStore } from "@/lib/auth-store";
+import { useLogout } from "@/services/auth";
 import { Button } from "@/components/ui";
 import { ThemeToggle } from "./ThemeToggle";
 import { MobileNav } from "./MobileNav";

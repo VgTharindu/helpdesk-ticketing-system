@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Ticket, PlusCircle, Users } from "lucide-react";
-import { useAuthStore } from "@/stores/auth-store";
-import { cn } from "@/utils/cn";
+import { useAuthStore } from "@/lib/auth-store";
+import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, permission: null },

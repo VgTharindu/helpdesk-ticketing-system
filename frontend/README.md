@@ -35,10 +35,9 @@ Frontend runs at http://localhost:3000. Requires the Laravel backend running at 
 
 ## Folder structure
 
-- `app/` — routes (route groups: `(auth)` for login/register, `(app)` for authenticated pages)
-- `features/` — feature-scoped API functions, hooks, and components (auth, dashboard, tickets, users)
-- `components/ui` — reusable UI primitives
-- `components/shared` — shared composite components (Pagination, EmptyState, ErrorState)
+- `app/` — routes (route groups: `(auth)` for login/register, `(app)` for authenticated pages) and the Next.js API routes (`app/api`)
+- `services/` — one file per resource (auth, dashboard, tickets, users): form schemas, API calls and React Query hooks, split by comment sections
+- `components/ui` — reusable UI primitives and shared pieces (Button, Input, Modal, Pagination, EmptyState, ErrorState...)
 - `components/layout` — app shell (Sidebar, Topbar, MobileNav)
-- `lib/api` — API client, types, error handling
-- `stores/` — Zustand stores
+- `components/tickets`, `components/users`, `components/dashboard` — page-specific components
+- `lib/` — API client + ApiError, shared types, auth store (Zustand), env config, small helpers (`cn`, `formatFileSize`, `useDebounce`)

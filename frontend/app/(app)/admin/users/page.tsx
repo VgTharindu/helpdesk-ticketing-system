@@ -2,13 +2,10 @@
 
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useUsers } from "@/features/users/hooks";
-import { UsersTable } from "@/features/users/components/UsersTable";
-import { CreateStaffDialog } from "@/features/users/components/CreateStaffDialog";
-import { Pagination } from "@/components/shared/Pagination";
-import { EmptyState } from "@/components/shared/EmptyState";
-import { ErrorState } from "@/components/shared/ErrorState";
-import { Button, Select, Skeleton, Spinner } from "@/components/ui";
+import { useUsers } from "@/services/users";
+import { UsersTable } from "@/components/users/UsersTable";
+import { CreateStaffDialog } from "@/components/users/CreateStaffDialog";
+import { Pagination, EmptyState, ErrorState, Button, Select, Skeleton, Spinner } from "@/components/ui";
 
 const ROLE_FILTER_OPTIONS = [
   { value: "", label: "All roles" },

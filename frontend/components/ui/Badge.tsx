@@ -1,4 +1,4 @@
-import { cn } from "@/utils/cn";
+import { cn } from "@/lib/utils";
 
 const STATUS_LABELS: Record<string, string> = {
   open: "Open",

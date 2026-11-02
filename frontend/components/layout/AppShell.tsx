@@ -1,7 +1,7 @@
 'use client';
 
-import { useCurrentUser } from "@/features/auth/hooks";
-import { useAuthStore } from "@/stores/auth-store";
+import { useCurrentUser } from "@/services/auth";
+import { useAuthStore } from "@/lib/auth-store";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { Spinner } from "@/components/ui";

@@ -2,14 +2,10 @@
 
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { useTickets } from "@/features/tickets/hooks";
-import { TicketFilters } from "@/features/tickets/components/TicketFilters";
-import { TicketsTable } from "@/features/tickets/components/TicketsTable";
-import { Pagination } from "@/components/shared/Pagination";
-import { EmptyState } from "@/components/shared/EmptyState";
-import { ErrorState } from "@/components/shared/ErrorState";
-import { Skeleton, Spinner } from "@/components/ui";
-import type { TicketListParams } from "@/features/tickets/api";
+import { useTickets, type TicketListParams } from "@/services/tickets";
+import { TicketFilters } from "@/components/tickets/TicketFilters";
+import { TicketsTable } from "@/components/tickets/TicketsTable";
+import { Pagination, EmptyState, ErrorState, Skeleton, Spinner } from "@/components/ui";
 
 function TicketsContent() {
   const searchParams = useSearchParams();
