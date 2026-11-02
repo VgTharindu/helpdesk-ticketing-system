@@ -10,9 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class ClaimTicketHandler
 {
-    public function __construct(private readonly TicketWorkflowService $workflow)
-    {
-    }
+    public function __construct(private readonly TicketWorkflowService $workflow) {}
 
     public function handle(Ticket $ticket, User $agent): Ticket
     {

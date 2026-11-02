@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Ticket;
 
+use App\Enums\TicketStatus;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use App\Enums\TicketStatus;
 use Illuminate\Validation\Rule;
 
 class UpdateTicketStatusRequest extends FormRequest

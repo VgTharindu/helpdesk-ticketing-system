@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Ticket;
 
-use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Foundation\Http\FormRequest;
 use App\Enums\TicketPriority;
 use App\Enums\TicketStatus;
+use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class ListTicketsRequest extends FormRequest

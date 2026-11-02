@@ -9,9 +9,7 @@ use Illuminate\Support\Carbon;
 
 class SendTicketRemindersHandler
 {
-    public function __construct(private readonly TicketNotificationService $notifications)
-    {
-    }
+    public function __construct(private readonly TicketNotificationService $notifications) {}
 
     public function handle(int $staleAfterHours = 24): array
     {

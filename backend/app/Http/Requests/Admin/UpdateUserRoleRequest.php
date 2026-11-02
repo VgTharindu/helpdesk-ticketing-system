@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Enums\UserRole;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use App\Enums\UserRole;
 use Illuminate\Validation\Rule;
 
 class UpdateUserRoleRequest extends FormRequest

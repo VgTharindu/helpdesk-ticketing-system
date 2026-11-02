@@ -14,8 +14,7 @@ class CreateReplyHandler
     public function __construct(
         private readonly TicketWorkflowService $workflow,
         private readonly TicketNotificationService $notifications,
-    ) {
-    }
+    ) {}
 
     public function handle(Ticket $ticket, User $author, string $message): TicketReply
     {
