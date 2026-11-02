@@ -1,11 +1,12 @@
 'use client';
 
 import Link from "next/link";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { createTicketSchema, type CreateTicketFormValues } from "@/features/tickets/schemas";
 import { useCreateTicket } from "@/features/tickets/hooks";
+import { AttachmentPicker } from "@/features/tickets/components/AttachmentPicker";
 import { Button, Input, Textarea, Select, Card } from "@/components/ui";
 import { ApiError } from "@/lib/api/errors";
 
@@ -18,11 +19,12 @@ const PRIORITY_OPTIONS = [
 export default function NewTicketPage() {
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<CreateTicketFormValues>({
     resolver: zodResolver(createTicketSchema),
-    defaultValues: { priority: "medium" },
+    defaultValues: { priority: "medium", attachments: [] },
   });
 
   const createTicket = useCreateTicket();
@@ -61,6 +63,22 @@ export default function NewTicketPage() {
             <label className="mb-1 block text-sm font-medium text-text">Priority</label>
             <Select options={PRIORITY_OPTIONS} {...register("priority")} />
             {errors.priority && <p className="mt-1 text-xs text-danger">{errors.priority.message}</p>}
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-text">Attachments (optional)</label>
+            {/* File inputs are not text fields, so they are controlled through Controller */}
+            <Controller
+              name="attachments"
+              control={control}
+              render={({ field }) => (
+                <AttachmentPicker
+                  files={field.value}
+                  onChange={field.onChange}
+                  error={errors.attachments?.message}
+                />
+              )}
+            />
           </div>
 
           {createTicket.isError && (

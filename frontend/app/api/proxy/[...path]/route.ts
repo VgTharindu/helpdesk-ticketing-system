@@ -4,6 +4,9 @@ import { env } from "@/config/env";
 
 const TOKEN_COOKIE_NAME = "helpdesk_token";
 
+// Response headers passed back to the browser (needed for file downloads)
+const PASS_THROUGH_HEADERS = ["content-type", "content-disposition"];
+
 async function forward(request: NextRequest, path: string[]): Promise<NextResponse> {
   const token = (await cookies()).get(TOKEN_COOKIE_NAME)?.value;
   const targetPath = path.join("/");
@@ -12,15 +15,21 @@ async function forward(request: NextRequest, path: string[]): Promise<NextRespon
 
   const headers: Record<string, string> = {
     Accept: "application/json",
-    "Content-Type": "application/json",
   };
+
+  // Keep the original content type (JSON or multipart with its boundary)
+  const contentType = request.headers.get("content-type");
+  if (contentType) {
+    headers["Content-Type"] = contentType;
+  }
 
   if (token) {
     headers.Authorization = `Bearer ${token}`;
   }
 
   const hasBody = request.method !== "GET" && request.method !== "DELETE";
-  const body = hasBody ? await request.text() : undefined;
+  // Raw bytes, so file uploads are not corrupted
+  const body = hasBody ? await request.arrayBuffer() : undefined;
 
   const backendResponse = await fetch(url, {
     method: request.method,
@@ -29,11 +38,19 @@ async function forward(request: NextRequest, path: string[]): Promise<NextRespon
     cache: "no-store",
   });
 
-  const responseBody = await backendResponse.text();
+  const responseBody = await backendResponse.arrayBuffer();
+
+  const responseHeaders = new Headers();
+  PASS_THROUGH_HEADERS.forEach((name) => {
+    const value = backendResponse.headers.get(name);
+    if (value) {
+      responseHeaders.set(name, value);
+    }
+  });
 
   return new NextResponse(responseBody, {
     status: backendResponse.status,
-    headers: { "Content-Type": "application/json" },
+    headers: responseHeaders,
   });
 }
 

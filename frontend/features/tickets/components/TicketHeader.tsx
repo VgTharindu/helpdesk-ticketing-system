@@ -5,6 +5,7 @@ import { StatusBadge, PriorityBadge, Button } from "@/components/ui";
 import { useAuthStore } from "@/stores/auth-store";
 import { useClaimTicket, useChangeStatus } from "../hooks";
 import { AssignDialog } from "./AssignDialog";
+import { AttachmentList } from "./AttachmentList";
 import type { Ticket } from "@/lib/api/types";
 
 export function TicketHeader({ ticket }: { ticket: Ticket }) {
@@ -40,6 +41,8 @@ export function TicketHeader({ ticket }: { ticket: Ticket }) {
       </p>
 
       <p className="whitespace-pre-wrap text-sm text-text">{ticket.description}</p>
+
+      <AttachmentList attachments={ticket.attachments ?? []} />
 
       <div className="flex flex-wrap gap-2 border-t border-border pt-3">
         {canClaim && (
