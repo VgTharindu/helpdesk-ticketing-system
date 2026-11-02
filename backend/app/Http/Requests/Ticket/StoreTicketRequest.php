@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Ticket;
 
+use App\Enums\TicketPriority;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use App\Enums\TicketPriority;
 use Illuminate\Validation\Rule;
 
 class StoreTicketRequest extends FormRequest
@@ -28,6 +28,25 @@ class StoreTicketRequest extends FormRequest
             'subject' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'priority' => ['required', Rule::enum(TicketPriority::class)],
+
+            // Optional files: up to 3, images or PDF, 3 MB each
+            'attachments' => ['nullable', 'array', 'max:3'],
+            'attachments.*' => ['file', 'mimes:jpg,jpeg,png,pdf', 'max:3072'],
+        ];
+    }
+
+    /**
+     * Custom messages for attachment errors.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'attachments.max' => 'You can attach up to 3 files.',
+            'attachments.*.file' => 'Each attachment must be a valid file.',
+            'attachments.*.mimes' => 'Each attachment must be a JPG, PNG or PDF file.',
+            'attachments.*.max' => 'Each attachment must be 3 MB or smaller.',
         ];
     }
 }
