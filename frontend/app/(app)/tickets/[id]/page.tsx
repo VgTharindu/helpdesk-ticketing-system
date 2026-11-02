@@ -3,16 +3,15 @@
 import { use, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { useTicket, useReplies, useTicketHistory, useTicketAssignments } from "@/features/tickets/hooks";
-import { TicketHeader } from "@/features/tickets/components/TicketHeader";
-import { ConversationThread } from "@/features/tickets/components/ConversationThread";
-import { ReplyForm } from "@/features/tickets/components/ReplyForm";
-import { HistoryTimeline } from "@/features/tickets/components/HistoryTimeline";
-import { AssignmentsTable } from "@/features/tickets/components/AssignmentsTable";
-import { Skeleton, Card } from "@/components/ui";
-import { ErrorState } from "@/components/shared/ErrorState";
-import { useAuthStore } from "@/stores/auth-store";
-import { cn } from "@/utils/cn";
+import { useTicket, useReplies, useTicketHistory, useTicketAssignments } from "@/services/tickets";
+import { TicketHeader } from "@/components/tickets/TicketHeader";
+import { ConversationThread } from "@/components/tickets/ConversationThread";
+import { ReplyForm } from "@/components/tickets/ReplyForm";
+import { HistoryTimeline } from "@/components/tickets/HistoryTimeline";
+import { AssignmentsTable } from "@/components/tickets/AssignmentsTable";
+import { Skeleton, Card, ErrorState } from "@/components/ui";
+import { useAuthStore } from "@/lib/auth-store";
+import { cn } from "@/lib/utils";
 
 type Tab = "conversation" | "history" | "assignments";
 

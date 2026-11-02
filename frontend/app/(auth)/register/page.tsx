@@ -3,10 +3,9 @@
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { registerSchema, type RegisterFormValues } from "@/features/auth/schemas";
-import { useRegister } from "@/features/auth/hooks";
+import { registerSchema, type RegisterFormValues, useRegister } from "@/services/auth";
 import { Button, Input, Card } from "@/components/ui";
-import { ApiError } from "@/lib/api/errors";
+import { ApiError } from "@/lib/api-client";
 
 export default function RegisterPage() {
   const {

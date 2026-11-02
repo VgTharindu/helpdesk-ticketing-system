@@ -5,10 +5,9 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, type LoginFormValues } from "@/features/auth/schemas";
-import { useLogin } from "@/features/auth/hooks";
+import { loginSchema, type LoginFormValues, useLogin } from "@/services/auth";
 import { Button, Input, Card, Spinner } from "@/components/ui";
-import { ApiError } from "@/lib/api/errors";
+import { ApiError } from "@/lib/api-client";
 
 function LoginForm() {
   const searchParams = useSearchParams();

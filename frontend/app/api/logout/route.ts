@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { env } from "@/config/env";
+import { env } from "@/lib/env";
 
 const TOKEN_COOKIE_NAME = "helpdesk_token";
 
