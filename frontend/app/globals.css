@@ -2,7 +2,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --color-background: #F8FAFC;
+  --color-background: #F1F5F9;
   --color-surface: #FFFFFF;
   --color-border: #E2E8F0;
   --color-text: #0F172A;
@@ -28,6 +28,9 @@
   --color-priority-low: #64748B;
   --color-priority-medium: #B45309;
   --color-priority-high: #DC2626;
+
+  --color-stat-unassigned: #64748B;
+  --color-stat-mine: #7C3AED;
 }
 
 .dark {
@@ -57,6 +60,9 @@
   --color-priority-low: #94A3B8;
   --color-priority-medium: #FBBF24;
   --color-priority-high: #F87171;
+
+  --color-stat-unassigned: #94A3B8;
+  --color-stat-mine: #C4B5FD;
 }
 
 @theme inline {
