@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Handlers\Admin\CreateStaffUserHandler;
-use App\Handlers\Admin\ListUsersHandler;
-use App\Handlers\Admin\UpdateUserRoleHandler;
+use App\Handlers\UserHandler;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CreateStaffUserRequest;
 use App\Http\Requests\Admin\ListUsersRequest;
@@ -14,22 +12,16 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-/**
- * Admin user management endpoints.
- */
+// Admin user management endpoints
 class UserController extends Controller
 {
-    // =====================================================================
     // List
-    // =====================================================================
 
-    /**
-     * GET /api/admin/users
-     */
-    public function index(ListUsersRequest $request, ListUsersHandler $handler): AnonymousResourceCollection|JsonResponse
+    // GET /api/admin/users
+    public function index(ListUsersRequest $request, UserHandler $handler): AnonymousResourceCollection|JsonResponse
     {
         try {
-            $users = $handler->handle(
+            $users = $handler->index(
                 $request->validated('role'),
                 (int) $request->validated('per_page', 15),
             );
@@ -45,16 +37,12 @@ class UserController extends Controller
         return UserResource::collection($users);
     }
 
-    // =====================================================================
     // Create staff
-    // =====================================================================
 
-    /**
-     * POST /api/admin/users
-     */
-    public function store(CreateStaffUserRequest $request, CreateStaffUserHandler $handler): JsonResponse
+    // POST /api/admin/users
+    public function store(CreateStaffUserRequest $request, UserHandler $handler): JsonResponse
     {
-        $user = $handler->handle($request->validated());
+        $user = $handler->store($request->validated());
 
         return response()->json([
             'message' => 'User created successfully.',
@@ -62,16 +50,12 @@ class UserController extends Controller
         ], 201);
     }
 
-    // =====================================================================
     // Role management
-    // =====================================================================
 
-    /**
-     * PATCH /api/admin/users/{user}/role
-     */
-    public function updateRole(UpdateUserRoleRequest $request, User $user, UpdateUserRoleHandler $handler): JsonResponse
+    // PATCH /api/admin/users/{user}/role
+    public function updateRole(UpdateUserRoleRequest $request, User $user, UserHandler $handler): JsonResponse
     {
-        $updated = $handler->handle($request->user(), $user, $request->validated('role'));
+        $updated = $handler->updateRole($request->user(), $user, $request->validated('role'));
 
         return response()->json([
             'message' => 'Role updated successfully.',

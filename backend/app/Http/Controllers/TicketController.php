@@ -3,17 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\TicketStatus;
-use App\Handlers\Ticket\AssignTicketHandler;
-use App\Handlers\Ticket\ClaimTicketHandler;
-use App\Handlers\Ticket\CreateReplyHandler;
-use App\Handlers\Ticket\CreateTicketHandler;
-use App\Handlers\Ticket\DownloadAttachmentHandler;
-use App\Handlers\Ticket\ListRepliesHandler;
-use App\Handlers\Ticket\ListTicketAssignmentsHandler;
-use App\Handlers\Ticket\ListTicketHistoryHandler;
-use App\Handlers\Ticket\ListTicketsHandler;
-use App\Handlers\Ticket\ShowTicketHandler;
-use App\Handlers\Ticket\UpdateTicketStatusHandler;
+use App\Handlers\TicketHandler;
 use App\Http\Requests\Ticket\AssignTicketRequest;
 use App\Http\Requests\Ticket\ListTicketsRequest;
 use App\Http\Requests\Ticket\StoreReplyRequest;
@@ -36,9 +26,9 @@ class TicketController extends Controller
     // List & Show
 
     // GET /api/tickets
-    public function index(ListTicketsRequest $request, ListTicketsHandler $handler): AnonymousResourceCollection
+    public function index(ListTicketsRequest $request, TicketHandler $handler): AnonymousResourceCollection
     {
-        $tickets = $handler->handle(
+        $tickets = $handler->index(
             $request->user(),
             $request->safe()->only(['filter', 'sort']),
             (int) $request->validated('per_page', 15),
@@ -48,17 +38,17 @@ class TicketController extends Controller
     }
 
     // GET /api/tickets/{ticket}
-    public function show(Ticket $ticket, ShowTicketHandler $handler): TicketResource
+    public function show(Ticket $ticket, TicketHandler $handler): TicketResource
     {
-        return new TicketResource($handler->handle($ticket));
+        return new TicketResource($handler->show($ticket));
     }
 
     // Create
 
     // POST /api/tickets
-    public function store(StoreTicketRequest $request, CreateTicketHandler $handler): JsonResponse
+    public function store(StoreTicketRequest $request, TicketHandler $handler): JsonResponse
     {
-        $ticket = $handler->handle($request->user(), $request->validated());
+        $ticket = $handler->store($request->user(), $request->validated());
 
         return response()->json([
             'message' => 'Ticket created successfully.',
@@ -72,17 +62,17 @@ class TicketController extends Controller
     public function downloadAttachment(
         Ticket $ticket,
         TicketAttachment $attachment,
-        DownloadAttachmentHandler $handler,
+        TicketHandler $handler,
     ): StreamedResponse {
-        return $handler->handle($attachment);
+        return $handler->downloadAttachment($attachment);
     }
 
     // Assignment actions (claim / assign)
 
     // POST /api/tickets/{ticket}/claim
-    public function claim(Request $request, Ticket $ticket, ClaimTicketHandler $handler): JsonResponse
+    public function claim(Request $request, Ticket $ticket, TicketHandler $handler): JsonResponse
     {
-        $claimed = $handler->handle($ticket, $request->user());
+        $claimed = $handler->claim($ticket, $request->user());
 
         return response()->json([
             'message' => 'Ticket claimed successfully.',
@@ -91,9 +81,9 @@ class TicketController extends Controller
     }
 
     // POST /api/tickets/{ticket}/assign
-    public function assign(AssignTicketRequest $request, Ticket $ticket, AssignTicketHandler $handler): JsonResponse
+    public function assign(AssignTicketRequest $request, Ticket $ticket, TicketHandler $handler): JsonResponse
     {
-        $assigned = $handler->handle(
+        $assigned = $handler->assign(
             $ticket,
             (int) $request->validated('agent_id'),
             $request->user(),
@@ -107,9 +97,9 @@ class TicketController extends Controller
     }
 
     // GET /api/tickets/{ticket}/assignments
-    public function assignments(Ticket $ticket, ListTicketAssignmentsHandler $handler): AnonymousResourceCollection
+    public function assignments(Ticket $ticket, TicketHandler $handler): AnonymousResourceCollection
     {
-        return TicketAssignmentResource::collection($handler->handle($ticket));
+        return TicketAssignmentResource::collection($handler->assignments($ticket));
     }
 
     // Status
@@ -118,9 +108,9 @@ class TicketController extends Controller
     public function updateStatus(
         UpdateTicketStatusRequest $request,
         Ticket $ticket,
-        UpdateTicketStatusHandler $handler,
+        TicketHandler $handler,
     ): JsonResponse {
-        $updated = $handler->handle($ticket, TicketStatus::from($request->validated('status')));
+        $updated = $handler->updateStatus($ticket, TicketStatus::from($request->validated('status')));
 
         return response()->json([
             'message' => 'Ticket status updated successfully.',
@@ -129,23 +119,23 @@ class TicketController extends Controller
     }
 
     // GET /api/tickets/{ticket}/history
-    public function history(Ticket $ticket, ListTicketHistoryHandler $handler): AnonymousResourceCollection
+    public function history(Ticket $ticket, TicketHandler $handler): AnonymousResourceCollection
     {
-        return ActivityResource::collection($handler->handle($ticket));
+        return ActivityResource::collection($handler->history($ticket));
     }
 
     // Replies (conversation)
 
     // GET /api/tickets/{ticket}/replies
-    public function replies(Ticket $ticket, ListRepliesHandler $handler): AnonymousResourceCollection
+    public function replies(Ticket $ticket, TicketHandler $handler): AnonymousResourceCollection
     {
-        return TicketReplyResource::collection($handler->handle($ticket));
+        return TicketReplyResource::collection($handler->replies($ticket));
     }
 
     // POST /api/tickets/{ticket}/replies
-    public function storeReply(StoreReplyRequest $request, Ticket $ticket, CreateReplyHandler $handler): JsonResponse
+    public function storeReply(StoreReplyRequest $request, Ticket $ticket, TicketHandler $handler): JsonResponse
     {
-        $reply = $handler->handle($ticket, $request->user(), $request->validated('message'));
+        $reply = $handler->storeReply($ticket, $request->user(), $request->validated('message'));
 
         return response()->json([
             'message' => 'Reply added successfully.',

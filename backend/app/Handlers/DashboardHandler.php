@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Handlers\Dashboard;
+namespace App\Handlers;
 
 use App\Enums\PermissionName;
 use App\Enums\TicketStatus;
@@ -11,11 +11,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Spatie\Activitylog\Models\Activity;
 
-class GetDashboardHandler
+// Dashboard business logic (used by DashboardController)
+class DashboardHandler
 {
     private const RECENT_ACTIVITY_LIMIT = 10;
 
-    public function handle(User $user): array
+    // Show: scope, ticket counts and recent activity for the user's visible tickets
+    public function show(User $user): array
     {
         $visible = fn (): Builder => Ticket::query()->visibleTo($user);
 
