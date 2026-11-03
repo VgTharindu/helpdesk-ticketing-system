@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Handlers\Ticket\SendTicketRemindersHandler;
+use App\Handlers\TicketHandler;
 use Illuminate\Console\Command;
 
 class SendTicketReminders extends Command
@@ -11,7 +11,7 @@ class SendTicketReminders extends Command
 
     protected $description = 'Queue reminders for stale in-progress and waiting-for-customer tickets';
 
-    public function handle(SendTicketRemindersHandler $handler): int
+    public function handle(TicketHandler $handler): int
     {
         $hours = (int) $this->option('hours');
 
@@ -21,7 +21,7 @@ class SendTicketReminders extends Command
             return self::FAILURE;
         }
 
-        $result = $handler->handle($hours);
+        $result = $handler->sendReminders($hours);
 
         $this->info(
             "Queued {$result['agent_reminders']} agent reminder(s) and {$result['customer_reminders']} customer reminder(s)."

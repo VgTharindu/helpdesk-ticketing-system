@@ -2,22 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Handlers\Dashboard\GetDashboardHandler;
+use App\Handlers\DashboardHandler;
 use App\Http\Resources\ActivityResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-/**
- * Dashboard endpoints.
- */
+// Dashboard endpoints
 class DashboardController extends Controller
 {
-    /**
-     * GET /api/dashboard
-     */
-    public function show(Request $request, GetDashboardHandler $handler): JsonResponse
+    // GET /api/dashboard
+    public function show(Request $request, DashboardHandler $handler): JsonResponse
     {
-        $dashboard = $handler->handle($request->user());
+        $dashboard = $handler->show($request->user());
 
         return response()->json([
             'data' => [

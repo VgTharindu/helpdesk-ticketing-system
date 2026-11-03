@@ -2,29 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Handlers\Auth\LoginHandler;
-use App\Handlers\Auth\RegisterCustomerHandler;
+use App\Handlers\AuthHandler;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-/**
- * Authentication endpoints (register, login, logout, current user).
- */
+// Authentication endpoints (register, login, logout, current user)
 class AuthController extends Controller
 {
-    // =====================================================================
     // Public (no token)
-    // =====================================================================
 
-    /**
-     * POST /api/register
-     */
-    public function register(RegisterRequest $request, RegisterCustomerHandler $handler): JsonResponse
+    // POST /api/register
+    public function register(RegisterRequest $request, AuthHandler $handler): JsonResponse
     {
-        $result = $handler->handle($request->validated());
+        $result = $handler->register($request->validated());
 
         return response()->json([
             'message' => 'Registered successfully.',
@@ -35,12 +28,10 @@ class AuthController extends Controller
         ], 201);
     }
 
-    /**
-     * POST /api/login
-     */
-    public function login(LoginRequest $request, LoginHandler $handler): JsonResponse
+    // POST /api/login
+    public function login(LoginRequest $request, AuthHandler $handler): JsonResponse
     {
-        $result = $handler->handle(
+        $result = $handler->login(
             $request->validated('email'),
             $request->validated('password'),
         );
@@ -54,13 +45,9 @@ class AuthController extends Controller
         ]);
     }
 
-    // =====================================================================
     // Authenticated (auth:sanctum)
-    // =====================================================================
 
-    /**
-     * POST /api/logout
-     */
+    // POST /api/logout
     public function logout(Request $request): JsonResponse
     {
         $request->user()->currentAccessToken()->delete();
@@ -68,9 +55,7 @@ class AuthController extends Controller
         return response()->json(['message' => 'Logged out successfully.']);
     }
 
-    /**
-     * GET /api/me
-     */
+    // GET /api/me
     public function me(Request $request): JsonResponse
     {
         return response()->json([
