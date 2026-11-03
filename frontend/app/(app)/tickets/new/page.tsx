@@ -33,13 +33,14 @@ export default function NewTicketPage() {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    // Centered on the page with a comfortable reading width
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-4">
       <Link href="/tickets" className="flex w-fit items-center gap-1 text-sm text-text-muted hover:text-text">
         <ArrowLeft size={14} />
         Back to tickets
       </Link>
 
-      <Card className="max-w-xl">
+      <Card className="p-6">
         <h1 className="mb-6 text-xl font-semibold text-text">New ticket</h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">

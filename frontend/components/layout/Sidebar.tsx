@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Ticket, PlusCircle, Users } from "lucide-react";
+import { LayoutDashboard, LifeBuoy, Ticket, PlusCircle, Users } from "lucide-react";
 import { useAuthStore } from "@/lib/auth-store";
 import { cn } from "@/lib/utils";
 
@@ -21,7 +21,10 @@ export function Sidebar() {
 
   return (
     <aside className="hidden w-60 flex-col border-r border-border bg-surface p-4 md:flex">
-      <p className="mb-6 px-2 text-lg font-semibold text-text">Helpdesk</p>
+      <p className="mb-6 flex items-center gap-2 px-2 text-lg font-bold text-primary">
+        <LifeBuoy size={20} />
+        Helpdesk
+      </p>
       <nav className="flex flex-col gap-1">
         {visibleItems.map((item) => {
           const Icon = item.icon;
