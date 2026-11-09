@@ -34,8 +34,9 @@ class Ticket extends Model
     {
         return LogOptions::defaults()
             ->logOnly(['status'])
-            ->logOnlyDirty();
-
+            ->logOnlyDirty()
+            // Saves that leave the status untouched (reassign, touch) must not add a history row
+            ->dontLogEmptyChanges();
     }
 
     public function customer(): BelongsTo
