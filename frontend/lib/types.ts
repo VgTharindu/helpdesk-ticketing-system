@@ -101,3 +101,27 @@ export interface Assignment {
   unassigned_at: string | null;
   is_current: boolean;
 }
+
+export type NotificationType =
+  | "ticket_replied"
+  | "ticket_assigned"
+  | "ticket_resolved"
+  | "new_ticket";
+
+export interface NotificationData {
+  type: NotificationType;
+  ticket_id: number;
+  ticket_subject: string;
+  author_name?: string;
+  preview?: string;
+}
+
+export interface AppNotification {
+  id: string;
+  data: NotificationData;
+  read_at: string | null;
+  created_at: string;
+}
+
+// Websocket payload: the stored data plus the notification id and short type
+export type BroadcastNotification = NotificationData & { id: string };

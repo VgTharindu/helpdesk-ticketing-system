@@ -4,6 +4,7 @@ import { LogOut } from "lucide-react";
 import { useAuthStore } from "@/lib/auth-store";
 import { useLogout } from "@/services/auth";
 import { Button } from "@/components/ui";
+import { NotificationBell } from "./NotificationBell";
 import { ThemeToggle } from "./ThemeToggle";
 import { MobileNav } from "./MobileNav";
 
@@ -14,7 +15,8 @@ export function Topbar() {
   return (
     <header className="flex items-center justify-between border-b border-border bg-surface px-4 py-3 sm:px-6">
       <MobileNav />
-      <div className="flex items-center gap-2 sm:gap-3">
+      <div className="ml-auto flex items-center gap-2 sm:gap-3">
+        <NotificationBell />
         <ThemeToggle />
         <span className="hidden text-sm text-text-muted sm:inline">{user?.name}</span>
         <Button variant="ghost" size="sm" onClick={() => logout.mutate()} isLoading={logout.isPending}>
