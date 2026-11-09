@@ -1,0 +1,10 @@
+[33mcommit c91262a241cdfc223382c5f26246963c859fae32[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/fix-empty-activity-log[m[33m)[m
+Author: vgtharindu <vgtharindu165@gmail.com>
+Date:   Mon Nov 9 15:42:49 2026 +0530
+
+    fix: skip activity log rows when the ticket status is unchanged
+    
+    Reassigning a ticket or touching it on a reply triggers an updated event without a status change, so logOnlyDirty produced an activity row with an empty attribute_changes payload. Those rows showed up in the status history tab with no badges. dontLogEmptyChanges skips them, while real status transitions and the created event are still logged.
+    
+    Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
+    Claude-Session: https://claude.ai/code/session_01W7zArkAeRkiatXtLvrrFJv

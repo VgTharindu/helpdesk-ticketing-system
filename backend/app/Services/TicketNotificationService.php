@@ -3,33 +3,34 @@
 namespace App\Services;
 
 use App\Enums\UserRole;
-use App\Mail\AgentRepliedMail;
-use App\Mail\CustomerRepliedMail;
-use App\Mail\NewTicketForSupportMail;
-use App\Mail\TicketAssignedMail;
-use App\Mail\TicketCreatedMail;
 use App\Mail\TicketReminderAgentMail;
 use App\Mail\TicketReminderCustomerMail;
-use App\Mail\TicketResolvedMail;
 use App\Models\Ticket;
 use App\Models\TicketReply;
 use App\Models\User;
+use App\Notifications\AgentReplied;
+use App\Notifications\CustomerReplied;
+use App\Notifications\NewTicketForSupport;
+use App\Notifications\TicketAssigned;
+use App\Notifications\TicketCreated;
+use App\Notifications\TicketResolved;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 
 class TicketNotificationService
 {
     public function ticketCreated(Ticket $ticket): void
     {
-        Mail::to($ticket->customer)->send(new TicketCreatedMail($ticket));
+        $ticket->customer->notify(new TicketCreated($ticket));
 
-        foreach (User::role(UserRole::Agent->value)->get() as $agent) {
-            Mail::to($agent)->send(new NewTicketForSupportMail($ticket, $agent));
-        }
+        $agents = User::role(UserRole::Agent->value)->get();
+
+        Notification::send($agents, new NewTicketForSupport($ticket));
     }
 
     public function ticketAssigned(Ticket $ticket, User $agent): void
     {
-        Mail::to($agent)->send(new TicketAssignedMail($ticket, $agent));
+        $agent->notify(new TicketAssigned($ticket));
     }
 
     public function customerReplied(TicketReply $reply): void
@@ -40,19 +41,20 @@ class TicketNotificationService
             return;
         }
 
-        Mail::to($agent)->send(new CustomerRepliedMail($reply));
+        $agent->notify(new CustomerReplied($reply));
     }
 
     public function agentReplied(TicketReply $reply): void
     {
-        Mail::to($reply->ticket->customer)->send(new AgentRepliedMail($reply));
+        $reply->ticket->customer->notify(new AgentReplied($reply));
     }
 
     public function ticketResolved(Ticket $ticket): void
     {
-        Mail::to($ticket->customer)->send(new TicketResolvedMail($ticket));
+        $ticket->customer->notify(new TicketResolved($ticket));
     }
 
+    // Reminders stay email only: a daily nudge is not an in-app event
     public function reminderForAgent(Ticket $ticket): void
     {
         Mail::to($ticket->agent)->send(new TicketReminderAgentMail($ticket));

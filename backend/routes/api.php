@@ -4,6 +4,7 @@ use App\Enums\PermissionName;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\TicketController;
 use Illuminate\Support\Facades\Route;
 
@@ -37,6 +38,15 @@ Route::middleware('auth:sanctum')->group(function () use ($canViewTickets, $canV
 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'show'])->middleware($canViewTickets);
+
+    // Notifications: every signed in user reads and clears their own
+    Route::controller(NotificationController::class)
+        ->prefix('notifications')
+        ->group(function () {
+            Route::get('/', 'index');
+            Route::post('/read-all', 'markAllAsRead');
+            Route::patch('/{notification}/read', 'markAsRead');
+        });
 
     // Tickets
     Route::controller(TicketController::class)
